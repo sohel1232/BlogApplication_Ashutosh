@@ -29,9 +29,20 @@ public class BlogController {
         postService = thePostService;
         tagService = theTagService;
     }
-
+	
     
-    
+    @GetMapping("/homepage")
+    public String homePage(Model theModel){
+        List<Post> posts = postService.findAll();
+        theModel.addAttribute("blogs", posts);
+        return "Home-Page";
+    }
+    @GetMapping("/newpost")
+    public String createBlog(Model theModel){
+        Post post = new Post();
+        theModel.addAttribute("post",post);
+        return "new-post";
+    }
     @RequestMapping("/publish")
     public String publishBlog(@ModelAttribute("post") Post post, Model theModel){
         System.out.println(post);
@@ -64,5 +75,11 @@ public class BlogController {
         List<Post> posts = postService.findAll();
         theModel.addAttribute("blogs", posts);
         return "Home-Page";
+    }
+    @GetMapping("/showblog/{blogId}")
+    public String showPost(@PathVariable("blogId") int id, Model theModel){
+        Post post = postService.findById(id);
+        theModel.addAttribute("post" , post);
+        return "Blog-Post";
     }
     

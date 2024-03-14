@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add your custom CSS for blog cards -->
+    <style>
+        .blog-card {
+            margin-bottom: 20px;
+            height:200px;
+            overflow:hidden
+        }
+        h2{
+            margin-top:30px;
+            margin-bottom:60px;
+        }
+        a{
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Latest Blogs</h2>
+    <div class="row">
+        <!-- Iterate over the list of blogs -->
+        <div th:each="blog : ${blogs}" class="col-md-6">
+            <!-- Blog card -->
+            <a th:href="@{'/showblog/'+${blog.id}}" class="blog-link" >
+                <div class="card blog-card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${blog.title}"></h5>
+                        <p class="card-text" th:text="${blog.content}"></p>
+                        <!-- Add more details as needed -->
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

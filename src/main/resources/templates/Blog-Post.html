@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .update, .delete {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .update {
+            background-color: lightblue;
+            color: white;
+        }
+
+        .delete {
+            background-color: red;
+            color: white;
+        }
+
+        .update:hover, .delete:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 th:text="${post.title}">Title</h1>
+    <p>Author: <span th:text="${post.author.name}">Author</span></p>
+    <p>Published At: <span th:text="${post.publishedAt}">Published Date</span></p>
+    <p th:text="${post.content}">Content</p>
+</div>
+
+<div class="buttons">
+    <a class="update" th:href="@{'/updateblog/'+${post.id}}">Update</a>
+    <a class="delete" th:href="@{'/deleteblog/'+${post.id}}">Delete</a>
+</div>
+
+</body>
+</html>
