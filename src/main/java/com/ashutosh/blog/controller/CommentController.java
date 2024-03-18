@@ -39,6 +39,16 @@ public class CommentController {
         commentService.delete(commentId);
         return "redirect:/showblog/"+ postId;
     }
-   
+
+    @PostMapping("/edit-comment/{postId}/{commentId}")
+    public String updateComment(@PathVariable("commentId") int commentId, @PathVariable("postId") int postId, Model theModel){
+        Comments comment = commentService.findById(commentId);
+        Post post = postService.findById(postId);
+        String commentString = comment.getComment();
+        theModel.addAttribute("commentString", commentString);
+        theModel.addAttribute("post",post );
+        theModel.addAttribute("Comment", comment);
+        return "Blog-Post";
+    }
 
 }
