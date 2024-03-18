@@ -8,6 +8,7 @@ import com.ashutosh.blog.entity.Post;
 import com.ashutosh.blog.entity.Tag;
 import com.ashutosh.blog.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -122,5 +123,8 @@ public class PostServiceImpl implements PostService{
         theModel.addAttribute("post" , post);
         Comments comment = new Comments();
         theModel.addAttribute("Comment", comment);
+    }
+    public List<Post> getListOfTitleContentTag(String data){
+        return postRepository.findAllByTitleContainingOrContentContainingOrTagsNameContaining(data, data, data);
     }
 }

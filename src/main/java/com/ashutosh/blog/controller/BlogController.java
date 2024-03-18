@@ -3,11 +3,13 @@ package com.ashutosh.blog.controller;
 import com.ashutosh.blog.entity.Post;
 import com.ashutosh.blog.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -54,6 +56,12 @@ public class BlogController {
     public String deletePost(@PathVariable("postId") int id, Model theModel){
         postService.delete(id);
         return "redirect:/homepage";
+    }
+    @GetMapping("/post/search")
+    public String search(@RequestParam("search") String data, Model theModel){
+        List<Post> posts = postService.getListOfTitleContentTag(data);
+        theModel.addAttribute("posts",posts);
+        return "Home-Page";
     }
 
 }

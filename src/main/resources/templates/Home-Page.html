@@ -19,11 +19,30 @@
         a{
             text-decoration:none;
         }
+        .btn{
+            border:2px solid black;
+        }
+        .form-control{
+            border:2px solid black;
+            font-size:17px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Latest Blogs</h2>
+    <br>
+    <br>
+    <form action="#" th:action="@{/post/search}">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search blogs..." name="search">
+            <div class="input-group-append">
+                <button class="btn" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    <br>
+    <br>
     <div class="row">
         <!-- Iterate over the list of blogs -->
         <div th:each="post : ${posts}" class="col-md-6">

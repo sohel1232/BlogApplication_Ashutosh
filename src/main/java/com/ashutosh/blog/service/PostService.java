@@ -19,4 +19,6 @@ public interface PostService{
     public void update(int id, Model theModel);
 
     public void read(int id, Model theModel);
+
+    public List<Post> getListOfTitleContentTag(String data);
 }
