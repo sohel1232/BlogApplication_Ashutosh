@@ -148,19 +148,11 @@ public class Post {
     public List<Tag> getTags(){
         return tags;
     }
-    public void setTags(String tags) {
-        String[] tagsString =tags.split(",");
-        List<Tag> tagsList = new ArrayList<>();
-        for(String tagString : tagsString){
-            Tag tag = new Tag(tagString);
-            tagsList.add(tag);
-        }
-        this.tags = tagsList;
+
+    public void setTags(List<Tag> tag) {
+        this.tags = tag;
     }
-//    public void setTags(List<Tag> tag) {
-//        this.tags = tag;
-//    }
-    public void addtags(Tag tag){
+    public void addTags(Tag tag){
         if(tags == null){
             tags = new ArrayList<>();
         }
@@ -175,6 +167,12 @@ public class Post {
         this.comments = comments;
     }
 
+    public void addComments(Comments comment){
+        if(comments == null){
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
     @Override
     public String toString() {
         return "Post{" +

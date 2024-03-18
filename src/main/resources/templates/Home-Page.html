@@ -26,13 +26,13 @@
     <h2>Latest Blogs</h2>
     <div class="row">
         <!-- Iterate over the list of blogs -->
-        <div th:each="blog : ${blogs}" class="col-md-6">
+        <div th:each="post : ${posts}" class="col-md-6">
             <!-- Blog card -->
-            <a th:href="@{'/showblog/'+${blog.id}}" class="blog-link" >
+            <a th:href="@{'/showblog/'+${post.id}}" class="blog-link" >
                 <div class="card blog-card">
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${blog.title}"></h5>
-                        <p class="card-text" th:text="${blog.content}"></p>
+                        <h5 class="card-title" th:text="${post.title}"></h5>
+                        <p class="card-text" th:text="${post.excerpt}"></p>
                         <!-- Add more details as needed -->
                     </div>
                 </div>

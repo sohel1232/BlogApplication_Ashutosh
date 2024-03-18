@@ -18,7 +18,7 @@ public class Comments {
     @Column(name="comment")
     private String comment;
     @Column(name="created_at")
-    private String createdId;
+    private String createdAt;
     @Column(name="updated_at")
     private String updatedAt;
 
@@ -64,12 +64,12 @@ public class Comments {
         this.comment = comment;
     }
 
-    public String getCreatedId() {
-        return createdId;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedId(String createdId) {
-        this.createdId = createdId;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getUpdatedAt() {
@@ -87,7 +87,7 @@ public class Comments {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", comment='" + comment + '\'' +
-                ", createdId='" + createdId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }

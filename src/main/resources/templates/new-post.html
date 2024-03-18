@@ -15,6 +15,7 @@
 
         h3 {
             color: #000; /* Black text */
+            text-align:left;
         }
 
         form {
@@ -27,12 +28,14 @@
             padding: 10px;
             width: 100%;
             margin-bottom: 10px;
-            border: 1px solid #000; /* Black border */
+            border: 1px solid #000;
+            height: 40px;
+            font-size:19px;
         }
 
         textarea {
             resize: vertical; /* Allow vertical resizing */
-            height: 140px; /* Set initial height to 7 rows */
+            height: 320px; /* Set initial height to 7 rows */
         }
 
         input[type="submit"] {
@@ -53,15 +56,18 @@
     </style>
 </head>
 <body>
-<h3>New/Edit post</h3>
+<h1>New/Edit post</h1>
 <hr>
 
 <form actions="#" th:action="@{/publish}" th:object="${post}" method="POST">
     <input th:type="hidden" th:field="*{id}">
+    <h3>TITLE</h3>
     <input th:type="text" th:field="*{title}" placeholder="Title"><br><br>
-    <input th:type="text" th:field="*{tags}" placeholder="Tags">
+    <h3>TAGS</h3>
+    <input th:type="text" name="tag" placeholder="Tags" th:value="${tags}">
     <br><br>
-    <textarea th:field="*{content}" placeholder="Write Here ..." rows="7"></textarea>
+    <h3>CONTENT</h3>
+    <textarea th:field="*{content}" placeholder="Write Here ..." rows="30"></textarea>
     <br><br>
     <input th:type="submit" th:value="PUBLISH">
 </form>
