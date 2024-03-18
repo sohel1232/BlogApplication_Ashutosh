@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,5 +127,26 @@ public class PostServiceImpl implements PostService{
     }
     public List<Post> getListOfTitleContentTag(String data){
         return postRepository.findAllByTitleContainingOrContentContainingOrTagsNameContaining(data, data, data);
+    }
+    public List<Post> getListOfSortedPosts(String data, String sortBy){
+
+        List<Post> sortedPosts = postRepository.getPostsSorted(sortBy);
+        System.out.println("sorted posts "+ sortedPosts);
+        System.out.println(data);
+        if(data!=null) {
+            List<Post> posts = postRepository.findAllByTitleContainingOrContentContainingOrTagsNameContaining(data, data, data);
+            System.out.println(posts);
+            List<Post> SortedAndSearchedPosts = new ArrayList<>();
+            for (Post sortedPost : sortedPosts) {
+//            if(posts.contains(sortedPost))
+                for (Post post : posts) {
+                    if (post.getId() == sortedPost.getId()) {
+                        SortedAndSearchedPosts.add(post);
+                    }
+                }
+            }
+            return SortedAndSearchedPosts;
+        }
+        return sortedPosts;
     }
 }

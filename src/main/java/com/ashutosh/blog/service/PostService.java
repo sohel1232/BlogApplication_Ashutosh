@@ -21,4 +21,5 @@ public interface PostService{
     public void read(int id, Model theModel);
 
     public List<Post> getListOfTitleContentTag(String data);
+    public List<Post> getListOfSortedPosts(String data, String sortBy);
 }

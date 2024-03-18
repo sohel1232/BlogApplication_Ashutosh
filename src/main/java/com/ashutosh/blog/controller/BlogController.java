@@ -61,7 +61,18 @@ public class BlogController {
     public String search(@RequestParam("search") String data, Model theModel){
         List<Post> posts = postService.getListOfTitleContentTag(data);
         theModel.addAttribute("posts",posts);
+        theModel.addAttribute("search", data);
         return "Home-Page";
     }
 
+    @GetMapping("post/sort")
+    public String sortAndSearch(@RequestParam("search") String data, @RequestParam("sort") String sortBy, Model theModel){
+        System.out.println("search value is "+data);
+        System.out.println("value of sort by is "+sortBy);
+        List<Post> posts = postService.getListOfSortedPosts(data, sortBy);
+        System.out.println("returned posts " +posts);
+        theModel.addAttribute("posts", posts);
+        theModel.addAttribute("search", data);
+        return "Home-Page";
+    }
 }

@@ -12,4 +12,9 @@ public interface PostRepository extends JpaRepository<Post,Integer> {
 
     List<Post> findAllByTitleContainingOrContentContainingOrTagsNameContaining(String title, String content, String tag);
 
+    @Query("SELECT e FROM Post e ORDER BY "+ "CASE WHEN :sortBy = 'ASC' THEN e.publishedAt END ASC, "+
+            "CASE WHEN :sortBy = 'DESC' THEN e.publishedAt END DESC"
+    )
+    List<Post> getPostsSorted(@Param("sortBy") String sortBy);
+
 }
