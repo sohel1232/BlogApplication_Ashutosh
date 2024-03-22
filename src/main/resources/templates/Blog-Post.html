@@ -112,10 +112,19 @@
         .comment-form input[type="submit"]:hover {
             background-color: rgba(0, 0, 0, 0.8);
         }
+        .header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
     </style>
 </head>
 <body>
 <div class="blogdata">
+    <div class="header">
+      <h3>Blog Data</h3>
+      <a th:href="@{/homepage}">BACK TO HOMEPAGE</a>
+    </div>
     <div class="container">
         <h1 th:text="${post.title}">Title</h1>
         <p>Author: <span th:text="${post.author.name}">Author</span> &nbsp;

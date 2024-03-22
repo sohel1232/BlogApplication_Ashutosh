@@ -185,6 +185,7 @@ public class Post {
                 ", is_published=" + isPublished +
                 ", created_at=" + createdAt +
                 ", updated_at=" + updatedAt +
+                ", tags=" + tags +
                 '}';
     }
 }

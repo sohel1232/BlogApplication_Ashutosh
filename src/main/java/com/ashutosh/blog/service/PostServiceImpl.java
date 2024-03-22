@@ -8,11 +8,10 @@ import com.ashutosh.blog.entity.Post;
 import com.ashutosh.blog.entity.Tag;
 import com.ashutosh.blog.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.core.metrics.StartupStep;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -126,27 +125,54 @@ public class PostServiceImpl implements PostService{
         theModel.addAttribute("Comment", comment);
     }
     public List<Post> getListOfTitleContentTag(String data){
-        return postRepository.findAllByTitleContainingOrContentContainingOrTagsNameContaining(data, data, data);
+        data = data.trim();
+        data = data.toLowerCase();
+        return postRepository.findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrTagsNameContainingIgnoreCase(data, data, data);
     }
-    public List<Post> getListOfSortedPosts(String data, String sortBy){
-
+    public List<Post> getListOfSortedPosts(List<Integer> postId, String sortBy){
         List<Post> sortedPosts = postRepository.getPostsSorted(sortBy);
-        System.out.println("sorted posts "+ sortedPosts);
-        System.out.println(data);
-        if(data!=null) {
-            List<Post> posts = postRepository.findAllByTitleContainingOrContentContainingOrTagsNameContaining(data, data, data);
-            System.out.println(posts);
-            List<Post> SortedAndSearchedPosts = new ArrayList<>();
-            for (Post sortedPost : sortedPosts) {
-//            if(posts.contains(sortedPost))
-                for (Post post : posts) {
-                    if (post.getId() == sortedPost.getId()) {
-                        SortedAndSearchedPosts.add(post);
+        if(postId==null){
+            return sortedPosts;
+        }
+        List<Post> posts = new ArrayList<>();
+        for(int id : postId){
+            posts.add(postRepository.findById(id).orElse(null));
+        }
+        List<Post> sortedRequiredPosts = new ArrayList<>();
+        for(Post sortedPost : sortedPosts){
+            for(Post post : posts){
+                if(post.getId() == sortedPost.getId()){
+                    sortedRequiredPosts.add(post);
+                }
+            }
+        }
+        return sortedRequiredPosts;
+    }
+    public List<Post> getListOfFilteredPosts( List<Integer> tags, List<Integer> authors, List<Integer> postsIds) {
+        List<Post> posts = new ArrayList<>();
+        List<Post> tagsPosts = postRepository.findPostsByTagsIn(tags);
+        for (Post post : tagsPosts) {
+            if (!posts.contains(post)) {
+                posts.add(post);
+            }
+        }
+        List<Post> authorsPosts = postRepository.findPostsByAuthorIdIn(authors);
+        for (Post post : authorsPosts){
+            if (!posts.contains(post)) {
+                posts.add(post);
+            }
+        }
+        List<Post> selectedPosts =new ArrayList<>();
+        if(postsIds != null){
+            for(Post post : posts){
+                for(Integer postId : postsIds){
+                    if(post.getId() == postId){
+                        selectedPosts.add(post);
                     }
                 }
             }
-            return SortedAndSearchedPosts;
+            return selectedPosts;
         }
-        return sortedPosts;
+        return posts;
     }
 }
