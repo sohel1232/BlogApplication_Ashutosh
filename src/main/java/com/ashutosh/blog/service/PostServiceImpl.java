@@ -8,6 +8,10 @@ import com.ashutosh.blog.entity.Post;
 import com.ashutosh.blog.entity.Tag;
 import com.ashutosh.blog.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -79,12 +83,6 @@ public class PostServiceImpl implements PostService{
     @Override
     public Post findById(int id) {
         return postRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void readAll(Model theModel) {
-        List<Post> posts = postRepository.findAll();
-        theModel.addAttribute("posts", posts);
     }
 
     @Override
@@ -189,5 +187,12 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<Post> findAll(){
         return postRepository.findAll();
+    }
+
+    @Override
+    public Page<Post> getPage(List<Post> posts, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > posts.size() ? posts.size() : (start + pageable.getPageSize());
+        return new PageImpl<>(posts.subList(start, end), pageable, posts.size());
     }
 }
