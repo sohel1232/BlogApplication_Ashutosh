@@ -8,11 +8,13 @@ import com.ashutosh.blog.entity.Post;
 import com.ashutosh.blog.entity.Tag;
 import com.ashutosh.blog.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.metrics.StartupStep;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +44,6 @@ public class PostServiceImpl implements PostService{
         User user = userRepository.findById(1).orElse(null);
         post.setAuthor(user);
         post.setTags(null);
-
         List<Tag> tagsInDb = tagRepository.findAll();
         Set<String> tagNameInDb = new HashSet<>();
         for(Tag tag : tagsInDb){
@@ -129,14 +130,10 @@ public class PostServiceImpl implements PostService{
         data = data.toLowerCase();
         return postRepository.findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrTagsNameContainingIgnoreCase(data, data, data);
     }
-    public List<Post> getListOfSortedPosts(List<Integer> postId, String sortBy){
+    public List<Post> getListOfSortedPosts(List<Post> posts, String sortBy){
         List<Post> sortedPosts = postRepository.getPostsSorted(sortBy);
-        if(postId==null){
+        if(posts==null){
             return sortedPosts;
-        }
-        List<Post> posts = new ArrayList<>();
-        for(int id : postId){
-            posts.add(postRepository.findById(id).orElse(null));
         }
         List<Post> sortedRequiredPosts = new ArrayList<>();
         for(Post sortedPost : sortedPosts){
@@ -148,31 +145,49 @@ public class PostServiceImpl implements PostService{
         }
         return sortedRequiredPosts;
     }
-    public List<Post> getListOfFilteredPosts( List<Integer> tags, List<Integer> authors, List<Integer> postsIds) {
+    public List<Post> getListOfFilteredPosts(List<Integer> tags, List<Integer> authors, LocalDate fromDate, LocalDate toDate, List<Post> postsPresent) {
+        List<Post> publishDatesFilterPosts = new ArrayList<>();
+        List<Post> authorsFilterPosts = new ArrayList<>();
+        List<Post> tagsFilterPosts = new ArrayList<>();
         List<Post> posts = new ArrayList<>();
-        List<Post> tagsPosts = postRepository.findPostsByTagsIn(tags);
-        for (Post post : tagsPosts) {
-            if (!posts.contains(post)) {
-                posts.add(post);
+        if(fromDate!=null && toDate!=null) {
+            publishDatesFilterPosts = postRepository.findByCreatedAtBetween(fromDate.atStartOfDay().toString(), toDate.atTime(LocalTime.MAX).toString());
+            if(publishDatesFilterPosts.isEmpty()){
+                return posts;
             }
         }
-        List<Post> authorsPosts = postRepository.findPostsByAuthorIdIn(authors);
-        for (Post post : authorsPosts){
-            if (!posts.contains(post)) {
-                posts.add(post);
+        if(authors!=null) {
+            authorsFilterPosts = postRepository.findPostsByAuthorIdIn(authors);
+            if(authorsFilterPosts.isEmpty()){
+                return posts;
             }
         }
-        List<Post> selectedPosts =new ArrayList<>();
-        if(postsIds != null){
-            for(Post post : posts){
-                for(Integer postId : postsIds){
-                    if(post.getId() == postId){
-                        selectedPosts.add(post);
-                    }
-                }
+        if(tags!=null) {
+            tagsFilterPosts = postRepository.findPostsByTagsIn(tags);
+            if(tagsFilterPosts.isEmpty()){
+                return posts;
             }
-            return selectedPosts;
         }
+        if(fromDate!=null && toDate!=null){
+            posts.addAll(publishDatesFilterPosts);
+        }
+        if(authors!=null && !posts.isEmpty()){
+            posts.retainAll(authorsFilterPosts);
+        }
+        else{
+            posts.addAll(authorsFilterPosts);
+        }
+        if(tags!=null && !posts.isEmpty()){
+            posts.retainAll(tagsFilterPosts);
+        }
+        else{
+            posts.addAll(tagsFilterPosts);
+        }
+        posts.retainAll(postsPresent);
         return posts;
+    }
+    @Override
+    public List<Post> findAll(){
+        return postRepository.findAll();
     }
 }

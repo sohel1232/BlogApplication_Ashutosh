@@ -60,7 +60,7 @@
 <body>
 <div class="container">
     <h2>Latest Blogs</h2>
-    <form action="#" th:action="@{/post/search}">
+    <form action="#" th:action="@{/posts}">
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Search blogs..." name="search" th:value="${search}">
             <div class="input-group-append">
@@ -68,10 +68,10 @@
             </div>
         </div>
     </form>
-    <form action="#" th:action="@{/post/sort}">
-        <div th:each = "post : ${posts}">
-            <input type="hidden" name="postId" th:value="${post.id}">
-        </div>
+    <form action="#" th:action="@{/posts}">
+        <input type="hidden" name="search" th:value="${search}">
+        <input type="hidden" th:each="author : ${authorsChecked}" name="authorsChecked" th:value="${author}">
+        <input type="hidden" th:each="tag : ${tagsChecked}" name="tagsChecked" th:value="${tag}">
         <div class="form-group">
             <label for="sort">Sort by:</label>
             <div class="form-sort">
@@ -90,15 +90,13 @@
     <br>
 </div>
 <div class="main">
-    <form action="#" th:action="@{/post/filter}" class="filter">
+    <form action="#" th:action="@{/posts}" class="filter">
         <div class="form-check">
-            <div th:each = "post : ${posts}">
-                <input type="hidden" name="postId" th:value="${post.id}">
-            </div>
             <br>
             <label class="form-check-label">Tags:</label>
             <br>
             <br>
+            <input type="hidden" class="form-control" placeholder="Search blogs..." name="search" th:value="${search}">
             <div th:each="tag : ${tags}">
                 <input type="checkbox" class="form-check-input" name="tagsChecked" th:checked="${tagsChecked!=null && tagsChecked.contains(tag.id)}" th:value="${tag.id}" /> <span th:text="${tag.name}"></span><br>
             </div>
@@ -106,9 +104,6 @@
         <div class="form-check">
             <br>
             <label class="form-check-label">Authors:</label><br><br>
-            <div th:each="authorChecked : ${authorsChecked}">
-                <h3 th:value="${authorChecked}"></h3>
-            </div>
             <div th:each="author : ${authors}">
                 <input type="checkbox" class="form-check-input"  name="authorsChecked" th:checked="${authorsChecked!=null && authorsChecked.contains(author.id)}" th:value="${author.id}" /> <span th:text="${author.name}"></span><br>
             </div>
@@ -116,9 +111,9 @@
         <div class="form-check">
             <br>
             <label class="form-check-label">Published Date:</label><br><br>
-            <input type="checkbox" class="form-check-input" name="publishedDate" value="today"/> Today<br>
-            <input type="checkbox" class="form-check-input" name="publishedDate" value="thisWeek"/> This Week<br>
-            <input type="checkbox" class="form-check-input" name="publishedDate" value="thisMonth"/> This Month<br>
+            From Date : <input type="date" name="fromDate">
+            <br>
+            To Date : <input type="date" name="toDate">
         </div>
         <br>
         <br>
@@ -138,6 +133,9 @@
                 </div>
             </a>
         </div>
+    </div>
+    <div class="page-no" th:each="pageNo : ${noOfPages}">
+        <a th:value="${pageNo}"></a>
     </div>
 </div>
 </body>

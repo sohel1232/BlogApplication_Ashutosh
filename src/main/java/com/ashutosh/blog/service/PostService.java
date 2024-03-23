@@ -6,6 +6,7 @@ import com.ashutosh.blog.entity.User;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.ui.Model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +26,9 @@ public interface PostService{
     public void read(int id, Model theModel);
 
     public List<Post> getListOfTitleContentTag(String data);
-    public List<Post> getListOfSortedPosts(List<Integer> postId, String sortBy);
+    public List<Post> getListOfSortedPosts(List<Post> posts, String sortBy);
 
-    public List<Post> getListOfFilteredPosts(List<Integer> tags, List<Integer> author, List<Integer> postsIds);
+    public List<Post> getListOfFilteredPosts(List<Integer> tags, List<Integer> author, LocalDate fromDate, LocalDate toDate, List<Post> postsPresent);
+
+    public List<Post> findAll();
 }

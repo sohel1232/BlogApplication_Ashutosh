@@ -8,11 +8,13 @@ import com.ashutosh.blog.service.TagService;
 import com.ashutosh.blog.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +32,12 @@ public class BlogController {
         tagService = theTagService;
         userService = theUserService;
     }
-	
-    
     @GetMapping("/homepage")
     public String homePage(Model theModel,
                            @RequestParam(value = "posts", required = false) List<Post> posts,
                            @RequestParam(value = "tagsChecked", required = false) List<Integer> tagsChecked,
-                           @RequestParam(value= "authorsChecked", required = false) List<Integer> authorsChecked){
+                           @RequestParam(value= "authorsChecked", required = false) List<Integer> authorsChecked,
+                           @RequestParam(value = "search", required = false) String data){
 
         if(posts != null){
             theModel.addAttribute("posts", posts);}
@@ -48,6 +49,9 @@ public class BlogController {
         }
         if(authorsChecked != null){
             theModel.addAttribute("authorsChecked", authorsChecked);
+        }
+        if(data != null){
+            theModel.addAttribute("search", data);
         }
         List<Tag> tags = tagService.findAll();
         List<User> authors = userService.findAll();
@@ -85,41 +89,31 @@ public class BlogController {
         postService.delete(id);
         return "redirect:/homepage";
     }
-    @GetMapping("/post/search")
-    public String search(@RequestParam("search") String data,
-                         RedirectAttributes redirectAttributes){
-        List<Post> posts = postService.getListOfTitleContentTag(data);
-        redirectAttributes.addAttribute("posts",posts);
-//        theModel.addAttribute("search", data);
-        return "redirect:/homepage";
-    }
-
-    @GetMapping("post/sort")
-    public String sort(@RequestParam(value = "postId",required = false) List<Integer> postsIds,
-                       @RequestParam(value = "authorsChecked", required=false) List<Integer> authorsChecked,
-                       @RequestParam(value = "tagsChecked", required = false) List<Integer> tagsChecked,
-                       @RequestParam("sort") String sortBy,
-                       RedirectAttributes redirectAttributes){
-        List<Post> posts = postService.getListOfSortedPosts(postsIds, sortBy);
-        redirectAttributes.addAttribute("posts", posts);
-        redirectAttributes.addAttribute("tagsChecked", tagsChecked);
-        redirectAttributes.addAttribute("authorsChecked", authorsChecked);
-//        theModel.addAttribute("sort", sortBy);
-        return "redirect:/homepage";
-    }
-    @GetMapping("post/filter")
-    public String filter(@RequestParam(value = "authorsChecked", required=false) List<Integer> authorsChecked,
-                         @RequestParam(value = "tagsChecked", required = false) List<Integer> tagsChecked,
-                         @RequestParam(value = "postId", required = false) List<Integer> postsIds,
-                         RedirectAttributes redirectAttributes){
-        if((authorsChecked==null || authorsChecked.isEmpty()) && (tagsChecked == null || tagsChecked.isEmpty())){
-            return "redirect:/homepage";
+    @GetMapping("/posts")
+    public String posts(@RequestParam(value = "search", required = false) String data,
+                      @RequestParam(value = "authorsChecked", required=false) List<Integer> authorsChecked,
+                      @RequestParam(value = "tagsChecked", required = false) List<Integer> tagsChecked,
+                      @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                      @RequestParam(value = "toDate" , required = false) @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate toDate,
+                      @RequestParam(value = "sort", required = false) String sortBy,
+                      RedirectAttributes redirectAttributes) {
+        List<Post> posts;
+        if (data != null && (!data.isEmpty())) {
+            posts = postService.getListOfTitleContentTag(data);
         }
-        List<Post> posts = postService.getListOfFilteredPosts(tagsChecked, authorsChecked, postsIds);
+        else{
+            posts = postService.findAll();
+        }
+        if ((authorsChecked != null ) || (tagsChecked != null ) || (fromDate != null && toDate != null)) {
+            posts = postService.getListOfFilteredPosts(tagsChecked, authorsChecked, fromDate, toDate, posts);
+        }
+        if (sortBy != null && !sortBy.isEmpty()) {
+            posts = postService.getListOfSortedPosts(posts, sortBy);
+        }
         redirectAttributes.addAttribute("posts", posts);
         redirectAttributes.addAttribute("tagsChecked", tagsChecked);
         redirectAttributes.addAttribute("authorsChecked", authorsChecked);
+        redirectAttributes.addAttribute("search", data);
         return "redirect:/homepage";
     }
-    
 }
