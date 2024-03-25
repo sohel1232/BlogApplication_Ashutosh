@@ -88,7 +88,7 @@ public class BlogController {
         theModel.addAttribute("pageSize", pageSize);
         return "Home-Page";
     }
-    @GetMapping("/newpost")
+    @RequestMapping("/newpost")
     public String createBlog(Model theModel){
         postService.create(theModel);
         return "new-post";
@@ -97,12 +97,19 @@ public class BlogController {
     public String publishBlog(HttpServletRequest request,  @ModelAttribute("post") Post post){
         String tagString = request.getParameter("tag");
         String[] tagStringArray = tagString.split(",");
-        postService.save(post, tagStringArray);
+        User user = userService.getCurrentUser();
+        postService.save(post, tagStringArray, user);
         return "redirect:/homepage";
     }
     @GetMapping("/showblog/{postId}")
     public String showPost(@PathVariable("postId") int id, Model theModel){
-        postService.read(id, theModel);
+        Post post = postService.read(id, theModel);
+        User currentUser = userService.getCurrentUser();
+        boolean postOfUser = false;
+        if(currentUser != null && currentUser.equals(post.getAuthor())){
+            postOfUser = true;
+        }
+        theModel.addAttribute("postOfUser", postOfUser);
         return "Blog-Post";
     }
     

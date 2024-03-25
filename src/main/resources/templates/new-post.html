@@ -65,9 +65,11 @@
     <input th:type="text" th:field="*{title}" placeholder="Title"><br><br>
     <h3>TAGS</h3>
     <input th:type="text" name="tag" placeholder="Tags" th:value="${tags}">
+    <h3>AUTHOR</h3>
+    <input th:type="text" th:field="*{author.name}" disabled >
     <br><br>
     <h3>CONTENT</h3>
-    <textarea th:field="*{comment}" placeholder="Write Here ..." rows="30"></textarea>
+    <textarea th:field="*{content}" placeholder="Write Here ..." rows="30"></textarea>
     <br><br>
     <input th:type="submit" th:value="PUBLISH">
 </form>

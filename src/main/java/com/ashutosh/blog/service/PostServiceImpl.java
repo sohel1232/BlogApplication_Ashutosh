@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -39,13 +41,13 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public void save(Post post, String[] tagStringArray) {
+    public void save(Post post, String[] tagStringArray, User user) {
 //        User user=new User("ashutosh","ashutosh3@gmail.com","51545");
         // user.setId(2);
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = localDateTime.format(dateTimeFormatter);
-        User user = userRepository.findById(1).orElse(null);
+//        User user = userRepository.findById(1).orElse(null);
         post.setAuthor(user);
         post.setTags(null);
         List<Tag> tagsInDb = tagRepository.findAll();
@@ -65,16 +67,17 @@ public class PostServiceImpl implements PostService{
         }
         post.setIsPublished(true);
         if(post.getId()==0){
+            post.setPublishedAt(formattedDateTime);
             post.setUpdatedAt(formattedDateTime);
         }
         else{
-            post.setPublishedAt(formattedDateTime);
             post.setUpdatedAt(formattedDateTime);
         }
         if(postRepository.findById(post.getId()).isPresent()){
             post.setTitle(post.getTitle());
             post.setContent(post.getContent());
         }
+
         String content = post.getContent();
         post.setExcerpt(content.length()>300?content.substring(0,300):content);
         postRepository.save(post);
@@ -117,11 +120,12 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void read(int id, Model theModel) {
+    public Post read(int id, Model theModel) {
         Post post = postRepository.findById(id).orElse(null);
         theModel.addAttribute("post" , post);
         Comments comment = new Comments();
         theModel.addAttribute("Comment", comment);
+        return post;
     }
     public List<Post> getListOfTitleContentTag(String data){
         data = data.trim();

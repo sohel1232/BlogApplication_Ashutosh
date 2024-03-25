@@ -2,8 +2,10 @@ package com.ashutosh.blog.controller;
 
 import com.ashutosh.blog.entity.Comments;
 import com.ashutosh.blog.entity.Post;
+import com.ashutosh.blog.entity.User;
 import com.ashutosh.blog.service.CommentService;
 import com.ashutosh.blog.service.PostService;
+import com.ashutosh.blog.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,20 +19,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class CommentController {
     private CommentService commentService;
     private PostService postService;
-
+    private UserService userService;
     @Autowired
-    public CommentController(CommentService theCommentService, PostService thePostService){
+    public CommentController(CommentService theCommentService, PostService thePostService, UserService theUserService){
         commentService = theCommentService;
         postService = thePostService;
+        userService = theUserService;
     }
     @PostMapping("/comments/{postId}/{commentId}")
     public String addComment(@PathVariable("postId") int postId, @PathVariable("commentId") int commentId, @ModelAttribute("Comment") Comments postComment){
+        User user= userService.getCurrentUser();
         if(commentId != 0){
-            commentService.update(commentId, postComment);
+            commentService.update(commentId, postComment, user);
             return "redirect:/showblog/" + postId;
         }
         else {
-            commentService.create(postId, postComment);
+            commentService.create(postId, postComment, user);
             return "redirect:/showblog/" + postId;
         }
     }

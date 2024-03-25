@@ -1,19 +1,16 @@
 package com.ashutosh.blog.service;
 
 import com.ashutosh.blog.entity.Post;
-import com.ashutosh.blog.entity.Tag;
 import com.ashutosh.blog.entity.User;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 public interface PostService{
-    public void save(Post post, String[] tagStringArray);
+    public void save(Post post, String[] tagStringArray, User user);
 
     public Post findById(int id);
 
@@ -23,7 +20,7 @@ public interface PostService{
 
     public void update(int id, Model theModel);
 
-    public void read(int id, Model theModel);
+    public Post read(int id, Model theModel);
 
     public List<Post> getListOfTitleContentTag(String data);
     public List<Post> getListOfSortedPosts(List<Post> posts, String sortBy);
@@ -33,4 +30,5 @@ public interface PostService{
     public List<Post> findAll();
 
     public Page<Post> getPage(List<Post> posts, Pageable pageable);
+
 }

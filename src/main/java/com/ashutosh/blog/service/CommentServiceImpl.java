@@ -27,11 +27,10 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void create(int id, Comments newComment) {
+    public void create(int id, Comments newComment, User user) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = localDateTime.format(dateTimeFormatter);
-        User user = userRepository.findById(5).orElse(null);
         Comments comment = new Comments();
         comment.setComment(newComment.getComment());
         comment.setName(user.getName());
@@ -50,13 +49,14 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void update(int id, Comments postComment) {
+    public void update(int id, Comments postComment, User user) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = localDateTime.format(dateTimeFormatter);
         Comments comment = commentRepository.findById(id).orElse(null);
         comment.setComment(postComment.getComment());
         comment.setUpdatedAt(formattedDateTime);
+        comment.setName(user.getName());
         commentRepository.save(comment);
     }
 

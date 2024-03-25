@@ -1,6 +1,7 @@
 package com.ashutosh.blog.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class User {
 
     @OneToMany(mappedBy="author" , cascade =
             CascadeType.ALL)
+    @JsonIgnore
     private List<Post> posts;
 
     public User() {

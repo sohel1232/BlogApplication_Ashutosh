@@ -135,13 +135,6 @@ public class Post {
         this.title = title;
     }
 
-    public Boolean getPublished() {
-        return isPublished;
-    }
-
-    public void setPublished(Boolean published) {
-        isPublished = published;
-    }
 
 
 
