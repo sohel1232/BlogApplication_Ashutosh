@@ -66,8 +66,9 @@ public class PostServiceImpl implements PostService{
             }
         }
         post.setIsPublished(true);
+        post.setPublishedAt(formattedDateTime);
         if(post.getId()==0){
-            post.setPublishedAt(formattedDateTime);
+
             post.setUpdatedAt(formattedDateTime);
         }
         else{
