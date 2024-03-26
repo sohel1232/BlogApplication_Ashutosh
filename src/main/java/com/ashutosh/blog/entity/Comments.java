@@ -25,7 +25,7 @@ public class Comments {
     public Comments() {
     }
 
-    public Comments(String name, String email, String comment, int postId) {
+    public Comments(String name, String email, String comment) {
         this.name = name;
         this.email = email;
         this.comment = comment;
