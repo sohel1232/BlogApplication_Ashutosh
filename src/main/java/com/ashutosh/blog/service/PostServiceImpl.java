@@ -84,6 +84,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    public void save(Post post) {
+        postRepository.save(post);
+    }
+
+    @Override
     public Post findById(int id) {
         return postRepository.findById(id).orElse(null);
     }

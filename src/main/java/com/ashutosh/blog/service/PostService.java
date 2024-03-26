@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PostService{
     public void save(Post post, String[] tagStringArray, User user);
-
+    public void save(Post post);
     public Post findById(int id);
 
     public void delete(int id);
